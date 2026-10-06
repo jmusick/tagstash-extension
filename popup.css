@@ -439,3 +439,12 @@ button:disabled {
   font-size: 1.1rem;
   line-height: 1.2;
 }
+
+.popup-footer .version-label {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--muted);
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}

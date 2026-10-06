@@ -5,6 +5,11 @@ const browserApi = globalThis.browser ?? globalThis.chrome;
 // Set up by lib/theme.js, loaded as a classic script in sidebar.html's <head>.
 const themeApi = globalThis.tagstashTheme;
 
+// Show which extension build this is.
+document.querySelectorAll('[data-version]').forEach((el) => {
+  el.textContent = `v${browserApi.runtime.getManifest().version}`;
+});
+
 // Set up storage listener at module level so it's always active
 // This allows the sidebar to refresh when login status changes
 browserApi.storage.onChanged.addListener((changes, areaName) => {

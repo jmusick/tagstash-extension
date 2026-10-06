@@ -5,6 +5,11 @@ const browserApi = globalThis.browser ?? globalThis.chrome;
 // Set up by lib/theme.js, loaded as a classic script in popup.html's <head>.
 const themeApi = globalThis.tagstashTheme;
 
+// Show which extension build this is.
+document.querySelectorAll('[data-version]').forEach((el) => {
+  el.textContent = `v${browserApi.runtime.getManifest().version}`;
+});
+
 const elements = {
   authView: document.getElementById('authView'),
   saveView: document.getElementById('saveView'),
