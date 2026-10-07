@@ -251,6 +251,8 @@ body {
 
 .bookmarks-list.bookmarks-list--flat {
   overflow: visible;
+  margin-left: 0;
+  border-left: none;
   padding: 2px 2px 6px 2px;
 }
 
@@ -283,32 +285,26 @@ body {
   gap: 2px;
 }
 
-/* Tag folder row */
+/* Tag folder row: a flat list row. The tag stock is the visual, so the row
+   itself gets no box -- only a hover wash. */
 .tag-folder {
-  border-radius: 8px;
   overflow: hidden;
-  border: 1px solid transparent;
-  transition: border-color 0.15s;
-}
-
-.tag-folder:hover {
-  border-color: var(--tag-border);
 }
 
 .tag-folder-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 8px;
+  padding: 3px 6px;
   cursor: pointer;
-  border-radius: 8px;
-  background: var(--tag-bg);
+  border-radius: 6px;
+  background: transparent;
   user-select: none;
   transition: background 0.15s;
 }
 
 .tag-folder-header:hover {
-  background: var(--tag-bg-hover);
+  background: var(--item-hover);
 }
 
 .tag-arrow {
@@ -364,6 +360,8 @@ body {
 .bookmarks-list {
   list-style: none;
   padding: 0 6px;
+  margin-left: 12px;
+  border-left: 1px solid var(--panel-border);
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -425,16 +423,7 @@ body {
   padding: 8px 4px;
 }
 
-/* Starred / pinned items */
-.tag-folder--starred .tag-folder-header {
-  background: var(--star-bg);
-  border: 1px solid var(--star-border);
-}
-
-.tag-folder--starred .tag-folder-header:hover {
-  background: var(--star-bg-hover);
-}
-
+/* Starred / pinned items: the star glyph marks them; no tinted box. */
 .tag-folder--starred .tag-label {
   color: var(--star);
 }
@@ -700,11 +689,11 @@ body {
   transform: none;
 }
 /* Tag labels use the same punched stock as the site. */
-.tag-folder-header { background: var(--panel); border: 1px solid var(--panel-border); }
-.tag-folder-header:hover { background: var(--surface-soft-hover); }
-.tag-label.tag-stock { color: var(--tag-ink-color); flex: 0 1 auto; min-width: 0; max-width: calc(100% - 64px); font-size: 0.82rem; overflow: visible; }
+/* Every tag stretches to the count column so the rows read as one even stack. */
+.tag-label.tag-stock { color: var(--tag-ink-color); flex: 1 1 auto; min-width: 0; font-size: 0.82rem; overflow: visible; }
 .tag-label-text { overflow: hidden; text-overflow: ellipsis; }
-.tag-count { margin-left: auto; background: transparent; font-variant-numeric: tabular-nums; }
+.tag-label .pinned-star { margin-left: auto; }
+.tag-count { margin-left: auto; min-width: 3ch; padding: 1px 0; background: transparent; text-align: right; font-variant-numeric: tabular-nums; }
 .tag-folder.open .tag-label { --tag-bg: var(--accent); --tag-ink-color: var(--on-accent); --tag-ring-color: var(--active-tag-ring); }
 .tag-folder--starred .tag-label:not(.tag-stock) { color: var(--star); }
 .bookmark-item:focus-within .bookmark-edit-btn { opacity: 1; pointer-events: auto; }

@@ -330,19 +330,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     arrow.textContent = "▶";
     header.appendChild(arrow);
 
-    if (starred) {
-      const star = document.createElement("span");
-      star.classList.add("pinned-star");
-      star.textContent = "★";
-      header.appendChild(star);
-    }
-
     const tagLabel = document.createElement("span");
     tagLabel.classList.add("tag-label", "tag-stock");
     const labelText = document.createElement('span');
     labelText.className = 'tag-label-text';
     labelText.textContent = tag.name;
     tagLabel.appendChild(labelText);
+    // The star rides inside the tag so starred and regular tags share a left edge.
+    if (starred) {
+      const star = document.createElement("span");
+      star.classList.add("pinned-star");
+      star.textContent = "★";
+      tagLabel.appendChild(star);
+    }
     header.appendChild(tagLabel);
 
     const tagCount = document.createElement("span");
