@@ -25,6 +25,17 @@
 
         <p id="statusMessage" class="status-message" hidden></p>
       </section>
+
+      <section class="settings-card">
+        <h2>Dashboard</h2>
+        <p class="intro">The Tagstash Dashboard shows your starred bookmarks and starred tags in one place. To make it your browser's start page, copy this address and paste it into your browser's home page or startup page setting.</p>
+        <div class="start-page-row">
+          <input id="dashboardUrl" type="text" readonly aria-label="Dashboard address" />
+          <button id="copyDashboardButton" type="button">Copy</button>
+          <a id="openDashboardLink" class="secondary-link" href="dashboard.html" target="_blank" rel="noreferrer">Open</a>
+        </div>
+        <p class="hint">Chrome and Edge: Settings &rarr; On startup &rarr; Open a specific page. Firefox: Settings &rarr; Home &rarr; Homepage and new windows &rarr; Custom URLs. In Firefox the address is unique to this install, so copy it from here.</p>
+      </section>
     </main>
 
     <script type="module" src="options.js"></script>

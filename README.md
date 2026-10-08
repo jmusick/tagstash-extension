@@ -11,6 +11,7 @@ A Firefox WebExtension that saves the active tab to your [Tagstash](https://tags
 - Displays a sidebar panel with your bookmarks organized by tags
 - Matches the Slate / Midnight / Light theme you picked on tagsta.sh
 - Edit, search, and manage bookmarks directly from the sidebar
+- Includes a dashboard of your starred bookmarks and tags that you can set as your browser's start page
 
 ## Installation
 
@@ -29,11 +30,21 @@ Or load it temporarily for development (see below).
 ### Sidebar
 - Browse all your bookmarks organized by tags
 - Search and filter bookmarks
-- Edit bookmark details and tags directly
+- Edit bookmark details and tags directly, with the same Fetch Title, Open, Base URL, Trim URL and Fetch From Site helpers as the popup
 - Mark bookmarks as favorites
 - Sort by count or alphabetically
 - Preferences cog for choosing whether bookmarks open in the current tab or a new tab (saved in this browser, separate from the website's own setting)
 - Responsive to session changes (auto-refresh on login)
+
+### Dashboard
+- A quick launcher for starred items: starred bookmarks as tiles, then starred tags, each shown open as a card
+- Non-starred tags stay hidden behind a **Show other tags** toggle (off by default, remembered in this browser)
+- Starred bookmarks and each tag card have their own sort: A–Z, newest Added, or recently Updated (remembered separately in this browser)
+- Hover a bookmark (or starred tile) for the same **Edit** button as the sidebar
+- Large tags show their first 10 bookmarks with a "Show more" toggle
+- Search box covers every bookmark, starred or not (press `/` to focus, Enter opens the top result) and Count / A–Z sort
+- Paints instantly from the last saved copy, then refreshes from the API
+- Open it from the popup's **Open Dashboard** button (the small copy icon inside that button copies its address); the extension's Settings page shows its address to paste into your browser's home page or startup page setting
 
 ### Theming
 - Popup, sidebar, and settings follow the theme saved on your Tagstash account (Slate, Midnight, or Light)

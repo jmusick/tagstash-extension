@@ -114,6 +114,15 @@
         </form>
 
         <button id="openSidebarButton" class="secondary-button sidebar-button" type="button" hidden>Open Sidebar</button>
+        <!-- The copy button sits inside the Dashboard button's outline but is a sibling
+             in the DOM, since a button can't contain another button. -->
+        <div class="dashboard-action">
+          <button id="openDashboardButton" class="secondary-button sidebar-button" type="button">Open Dashboard</button>
+          <button id="copyDashboardUrlButton" class="copy-url-button" type="button" title="Copy dashboard address" aria-label="Copy dashboard address">
+            <svg class="copy-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+            <svg class="check-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </section>
 
       <footer class="popup-footer">

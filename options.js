@@ -50,5 +50,21 @@ async function handleSubmit(event) {
   }
 }
 
+const dashboardUrl = browserApi.runtime.getURL('dashboard.html');
+const dashboardInput = document.getElementById('dashboardUrl');
+const copyDashboardButton = document.getElementById('copyDashboardButton');
+dashboardInput.value = dashboardUrl;
+dashboardInput.addEventListener('focus', () => dashboardInput.select());
+copyDashboardButton.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(dashboardUrl);
+    copyDashboardButton.textContent = 'Copied';
+  } catch {
+    dashboardInput.select();
+    copyDashboardButton.textContent = 'Press Ctrl+C';
+  }
+  setTimeout(() => { copyDashboardButton.textContent = 'Copy'; }, 2000);
+});
+
 loadSettings();
 elements.form.addEventListener('submit', handleSubmit);

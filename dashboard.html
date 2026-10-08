@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tagstash</title>
+  <link rel="icon" href="icons/icon-48.png">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="edit-modal.css">
+  <script src="lib/theme.js"></script>
+</head>
+<body>
+  <div class="dash-shell">
+    <header class="dash-header">
+      <a id="brand-link" href="https://tagsta.sh/" class="brand-link"><h1 class="brand-lockup"><img src="icons/icon-48.png" width="28" height="28" alt=""><span>Tagstash Dashboard</span></h1></a>
+      <div id="dash-search" class="dash-search">
+        <input id="search-input" type="search" placeholder="Search bookmarks  ( / )" autocomplete="off" aria-label="Search bookmarks" />
+      </div>
+      <div class="dash-controls">
+        <div class="sort-toggle" id="sort-toggle" title="Sort tags">
+          <button class="sort-btn active" type="button" data-sort="count">Count</button>
+          <button class="sort-btn" type="button" data-sort="alpha">A–Z</button>
+        </div>
+        <button id="refresh-btn" class="icon-btn" type="button" title="Refresh" aria-label="Refresh">↻</button>
+      </div>
+    </header>
+
+    <p id="not-logged-in" class="dash-notice" hidden>
+      Sign in with the Tagstash toolbar button to see your bookmarks here.
+    </p>
+    <p id="load-error" class="dash-notice dash-notice--error" hidden>
+      <span id="load-error-text"></span> <button id="retry-btn" type="button" class="text-btn">Try again</button>
+    </p>
+
+    <main id="dash-content"></main>
+
+    <footer class="dash-footer"><span class="version-label" data-version></span></footer>
+  </div>
+
+  <script src="dashboard.js" type="module"></script>
+</body>
+</html>

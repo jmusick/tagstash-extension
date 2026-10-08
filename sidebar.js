@@ -1,4 +1,5 @@
 import { createTagstashClient, isAuthError } from './lib/tagstash-client.js';
+import { createEditModal } from './lib/edit-modal.js';
 import { clearSession, getSettings, saveOpenLinksInNewTab, STORAGE_KEYS } from './lib/storage.js';
 
 const browserApi = globalThis.browser ?? globalThis.chrome;
@@ -119,137 +120,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     return searchable.includes(term);
   }
 
-  // ── Edit modal ──
-  const editOverlay = document.getElementById('edit-overlay');
-  const editForm = document.getElementById('edit-form');
-  const editTitleInput = document.getElementById('edit-title');
-  const editUrlInput = document.getElementById('edit-url');
-  const editDescInput = document.getElementById('edit-desc');
-  const editTagsField = document.getElementById('edit-tags-field');
-  const editTagPillsEl = document.getElementById('edit-tag-pills');
-  const editTagInput = document.getElementById('edit-tags');
-  const editError = document.getElementById('edit-error');
-  const editSaveBtn = document.getElementById('edit-save');
-
-  let editingBookmarkId = null;
-  let editTagList = [];
-
-  function normalizeEditTags(arr) {
-    return Array.from(new Set(arr.map(t => t.trim().toLowerCase()).filter(Boolean)));
-  }
-
-  function renderEditTagPills() {
-    editTagPillsEl.innerHTML = '';
-    editTagList.forEach((tag, index) => {
-      const pill = document.createElement('span');
-      pill.className = 'edit-tag-pill tag-stock';
-
-      const text = document.createElement('span');
-      text.textContent = tag;
-
-      const removeBtn = document.createElement('button');
-      removeBtn.type = 'button';
-      removeBtn.className = 'edit-tag-pill-remove';
-      removeBtn.setAttribute('aria-label', `Remove tag ${tag}`);
-      removeBtn.textContent = '\xd7';
-      removeBtn.addEventListener('click', () => {
-        editTagList.splice(index, 1);
-        renderEditTagPills();
-      });
-
-      pill.appendChild(text);
-      pill.appendChild(removeBtn);
-      editTagPillsEl.appendChild(pill);
-    });
-  }
-
-  function setEditTagList(arr) {
-    editTagList = normalizeEditTags(arr);
-    renderEditTagPills();
-  }
-
-  function commitEditTagDraft() {
-    const raw = editTagInput.value || '';
-    const pending = raw.split(/[\s,]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
-    if (pending.length === 0) return;
-    setEditTagList([...editTagList, ...pending]);
-    editTagInput.value = '';
-  }
-
-  editTagsField.addEventListener('click', () => editTagInput.focus());
-
-  editTagInput.addEventListener('keydown', (e) => {
-    const isDelimiter = e.key === ',' || e.key === ' ' || e.key === 'Spacebar';
-    if (isDelimiter && editTagInput.value.trim()) {
-      e.preventDefault();
-      commitEditTagDraft();
-      return;
-    }
-    if (e.key === 'Backspace' && !editTagInput.value && editTagList.length > 0) {
-      e.preventDefault();
-      editTagList.pop();
-      renderEditTagPills();
-    }
-    if (e.key === 'Enter' && editTagInput.value.trim()) {
-      e.preventDefault();
-      commitEditTagDraft();
-    }
-  });
-
-  function openEditModal(bookmark) {
-    editingBookmarkId = bookmark.id;
-    editTitleInput.value = bookmark.title || '';
-    editUrlInput.value = bookmark.url || '';
-    editDescInput.value = bookmark.description || '';
-    setEditTagList((bookmark.tags || []).map(t => t.name || t));
-    editTagInput.value = '';
-    editError.hidden = true;
-    editOverlay.hidden = false;
-    editTitleInput.focus();
-  }
-
-  function closeEditModal() {
-    editOverlay.hidden = true;
-    editingBookmarkId = null;
-  }
-
-  document.getElementById('edit-close').addEventListener('click', closeEditModal);
-  document.getElementById('edit-cancel').addEventListener('click', closeEditModal);
-  editOverlay.addEventListener('click', (e) => {
-    if (e.target === editOverlay) closeEditModal();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !editOverlay.hidden) closeEditModal();
-  });
-
-  editForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!editingBookmarkId) return;
-
-    commitEditTagDraft();
-
-    const data = {
-      title: editTitleInput.value.trim(),
-      url: editUrlInput.value.trim(),
-      description: editDescInput.value.trim(),
-      tags: editTagList,
-    };
-
-    editSaveBtn.disabled = true;
-    editSaveBtn.textContent = 'Saving…';
-    editError.hidden = true;
-
-    try {
-      await client.updateBookmark(editingBookmarkId, data);
-      closeEditModal();
-      await loadData();
-    } catch (err) {
-      editError.textContent = err.message || 'Failed to save.';
-      editError.hidden = false;
-    } finally {
-      editSaveBtn.disabled = false;
-      editSaveBtn.textContent = 'Save';
-    }
+  // ── Edit modal (shared with the dashboard) ──
+  const editModal = createEditModal({
+    fetchMetadata: (url) => client.fetchMetadata(url),
+    save: async (id, data) => {
+      await client.updateBookmark(id, data);
+      loadData();
+    },
   });
 
   // Persist the currently open tag/folder in localStorage
@@ -310,7 +187,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     editBtn.type = "button";
     editBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      openEditModal(bookmark);
+      editModal.open(bookmark);
     });
     bookmarkItem.appendChild(editBtn);
 

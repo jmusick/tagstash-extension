@@ -6,6 +6,7 @@
   <title>Tagstash Sidebar</title>
   <link rel="stylesheet" href="theme.css">
   <link rel="stylesheet" href="sidebar.css">
+  <link rel="stylesheet" href="edit-modal.css">
   <script src="lib/theme.js"></script>
 </head>
 <body>
@@ -42,42 +43,6 @@
     </p>
     <ul id="tags-list"></ul>
     <footer class="sidebar-footer"><span class="version-label" data-version></span></footer>
-  </div>
-
-  <div id="edit-overlay" class="edit-overlay" hidden>
-    <div class="edit-modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-heading">
-      <div class="edit-modal-header">
-        <h2 id="edit-modal-heading">Edit Bookmark</h2>
-        <button id="edit-close" class="edit-close-btn" type="button" aria-label="Close">✕</button>
-      </div>
-      <form id="edit-form">
-        <div class="edit-field">
-          <label for="edit-title">Title</label>
-          <input id="edit-title" type="text" required />
-        </div>
-        <div class="edit-field">
-          <label for="edit-url">URL</label>
-          <input id="edit-url" type="url" required />
-        </div>
-        <div class="edit-field">
-          <label for="edit-desc">Description</label>
-          <textarea id="edit-desc" rows="2"></textarea>
-        </div>
-        <div class="edit-field">
-          <label>Tags</label>
-          <div class="edit-tag-shell" id="edit-tags-field">
-            <div id="edit-tag-pills" class="edit-tag-pill-list"></div>
-            <input id="edit-tags" type="text" placeholder="Type tag, press comma" autocomplete="off" />
-          </div>
-          <small class="edit-tags-hint">Comma or Space to add &middot; Backspace to remove last</small>
-        </div>
-        <div id="edit-error" class="edit-error" hidden></div>
-        <div class="edit-modal-actions">
-          <button type="button" id="edit-cancel" class="edit-cancel-btn">Cancel</button>
-          <button type="submit" id="edit-save" class="edit-save-btn">Save</button>
-        </div>
-      </form>
-    </div>
   </div>
 
   <script src="sidebar.js" type="module"></script>

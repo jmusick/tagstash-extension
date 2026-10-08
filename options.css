@@ -105,6 +105,52 @@ button:hover {
   transform: translateY(-1px);
 }
 
+.settings-shell {
+  display: grid;
+  gap: 20px;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: 750;
+  color: var(--text);
+}
+
+.start-page-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.start-page-row input {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.85rem;
+}
+
+.secondary-link {
+  padding: 9px 16px;
+  border: 1px solid var(--accent-secondary-border);
+  border-radius: 8px;
+  color: var(--accent-secondary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.secondary-link:hover {
+  border-color: var(--accent-secondary);
+  color: var(--text);
+  background: var(--surface-soft-hover);
+}
+
+.hint {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
 .status-message {
   margin: 16px 0 0;
   font-size: 0.88rem;

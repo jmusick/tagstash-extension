@@ -1,4 +1,5 @@
 import { createTagstashClient } from './lib/tagstash-client.js';
+import { isSupportedUrl, normalizeBookmarkUrl, toBaseUrl, toTrimmedUrl } from './lib/bookmark-url.js';
 import { getSettings, saveSession, clearSession } from './lib/storage.js';
 
 const browserApi = globalThis.browser ?? globalThis.chrome;
@@ -35,6 +36,8 @@ const elements = {
   baseUrlButton: document.getElementById('baseUrlButton'),
   trimUrlButton: document.getElementById('trimUrlButton'),
   openSidebarButton: document.getElementById('openSidebarButton'),
+  openDashboardButton: document.getElementById('openDashboardButton'),
+  copyDashboardUrlButton: document.getElementById('copyDashboardUrlButton'),
 };
 
 const state = {
@@ -43,6 +46,8 @@ const state = {
   user: null,
   activeTab: null,
   existingBookmarkId: null,
+  // Firefox only: whether the Tagstash sidebar is open in the active tab's window.
+  sidebarOpen: false,
   tagList: [],
   allTagNames: [],
 };
@@ -77,43 +82,6 @@ function clearMessage() {
 function toggleView(isAuthenticated) {
   elements.authView.hidden = isAuthenticated;
   elements.saveView.hidden = !isAuthenticated;
-}
-
-function isSupportedUrl(url) {
-  try {
-    const parsed = new URL(url || '');
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
-
-function normalizeBookmarkUrl(value) {
-  const raw = (value || '').trim();
-  if (!raw) return '';
-
-  let normalized;
-  if (/^https?:\/\//i.test(raw)) {
-    normalized = raw;
-  } else {
-    const cleaned = raw
-      .replace(/^https?:/i, '')
-      .replace(/^\/\//, '')
-      .trim();
-
-    normalized = cleaned ? `https://${cleaned}` : '';
-  }
-  if (!normalized) return '';
-
-  // Keep a trailing slash on bare roots, including URLs produced by Base URL.
-  try {
-    const parsed = new URL(normalized);
-    if (parsed.pathname === '/' && !parsed.search && !parsed.hash) {
-      return `${parsed.origin}/`;
-    }
-  } catch {}
-
-  return normalized;
 }
 
 function normalizeTags(tagInput) {
@@ -351,20 +319,45 @@ async function handleFetchDescription() {
 }
 
 function handleBaseUrl() {
-  try {
-    const u = new URL(normalizeBookmarkUrl(elements.bookmarkUrl.value));
-    elements.bookmarkUrl.value = `${u.origin}/`;
-  } catch {}
+  const next = toBaseUrl(elements.bookmarkUrl.value);
+  if (next) elements.bookmarkUrl.value = next;
 }
 
 function handleTrimUrl() {
+  const next = toTrimmedUrl(elements.bookmarkUrl.value);
+  if (next) elements.bookmarkUrl.value = next;
+}
+
+// Firefox has its own sidebar API (sidebarAction); Chrome and Edge use sidePanel.
+function canOpenSidebar() {
+  return Boolean(browserApi.sidebarAction?.open)
+    || Boolean(browserApi.sidePanel?.open && state.activeTab?.windowId != null);
+}
+
+// Firefox can report whether the sidebar is open, so the button can close it
+// too. Chrome's sidePanel API has no equivalent, so there it always opens.
+async function syncSidebarButton() {
+  if (!browserApi.sidebarAction?.isOpen) return;
   try {
-    const u = new URL(normalizeBookmarkUrl(elements.bookmarkUrl.value));
-    elements.bookmarkUrl.value = u.origin + u.pathname;
-  } catch {}
+    const windowId = state.activeTab?.windowId;
+    state.sidebarOpen = await browserApi.sidebarAction.isOpen(windowId != null ? { windowId } : {});
+  } catch {
+    state.sidebarOpen = false;
+  }
+  elements.openSidebarButton.textContent = state.sidebarOpen ? 'Close Sidebar' : 'Open Sidebar';
 }
 
 function handleOpenSidebar() {
+  // Firefox only allows sidebarAction.open()/close() during the click itself,
+  // so call them before anything async runs.
+  if (browserApi.sidebarAction?.open) {
+    const closing = state.sidebarOpen && browserApi.sidebarAction.close;
+    (closing ? browserApi.sidebarAction.close() : browserApi.sidebarAction.open())
+      .then(() => window.close())
+      .catch(() => showMessage('error', closing ? 'Unable to close sidebar' : 'Unable to open sidebar'));
+    return;
+  }
+
   const windowId = state.activeTab?.windowId;
   if (!browserApi.sidePanel || windowId == null) return;
 
@@ -372,6 +365,29 @@ function handleOpenSidebar() {
     .open({ windowId })
     .then(() => window.close())
     .catch(() => showMessage('error', 'Unable to open sidebar'));
+}
+
+function handleOpenDashboard() {
+  browserApi.tabs
+    .create({ url: browserApi.runtime.getURL('dashboard.html') })
+    .then(() => window.close())
+    .catch(() => showMessage('error', 'Unable to open the dashboard'));
+}
+
+async function handleCopyDashboardUrl() {
+  const button = elements.copyDashboardUrlButton;
+  try {
+    await navigator.clipboard.writeText(browserApi.runtime.getURL('dashboard.html'));
+    button.classList.add('copied');
+    button.setAttribute('aria-label', 'Dashboard address copied');
+    showMessage('success', "Dashboard address copied. Paste it into your browser's home page setting.");
+    setTimeout(() => {
+      button.classList.remove('copied');
+      button.setAttribute('aria-label', 'Copy dashboard address');
+    }, 1500);
+  } catch {
+    showMessage('error', 'Unable to copy. The address is also on the Settings page.');
+  }
 }
 
 async function checkExistingBookmark() {
@@ -506,11 +522,14 @@ async function init() {
     await loadAllTagNames();
   }
 
-  if (browserApi.sidePanel && state.activeTab?.windowId != null) {
+  if (canOpenSidebar()) {
+    await syncSidebarButton();
     elements.openSidebarButton.hidden = false;
     elements.openSidebarButton.addEventListener('click', handleOpenSidebar);
   }
 
+  elements.openDashboardButton.addEventListener('click', handleOpenDashboard);
+  elements.copyDashboardUrlButton.addEventListener('click', handleCopyDashboardUrl);
   elements.loginForm.addEventListener('submit', handleLogin);
   elements.logoutButton.addEventListener('click', handleLogout);
   elements.fetchTitleButton.addEventListener('click', handleFetchTitle);

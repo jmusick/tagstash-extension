@@ -164,6 +164,53 @@ button:disabled {
   margin-top: 8px;
 }
 
+/* Open Dashboard with a small copy-address button tucked inside its right end. */
+.dashboard-action {
+  position: relative;
+}
+
+.dashboard-action .sidebar-button {
+  padding-right: 40px;
+  padding-left: 40px;
+}
+
+/* Both buttons stay put on hover so the copy button never drifts off its parent. */
+.dashboard-action button:hover {
+  transform: none;
+}
+
+.copy-url-button {
+  position: absolute;
+  /* Inset by the parent's 8px top margin and 1px border. */
+  top: 9px;
+  bottom: 1px;
+  right: 1px;
+  width: 34px;
+  padding: 0;
+  border-left: 1px solid var(--accent-secondary-border);
+  border-radius: 0 7px 7px 0;
+  background: transparent;
+  color: var(--accent-secondary);
+}
+
+.copy-url-button:hover {
+  background: var(--surface-soft-hover);
+  color: var(--text);
+}
+
+.copy-url-button .check-icon,
+.copy-url-button.copied .copy-icon {
+  display: none;
+}
+
+.copy-url-button.copied .check-icon {
+  display: block;
+}
+
+.copy-url-button.copied {
+  color: var(--success-text);
+}
+
 .secondary-button,
 .ghost-button {
   background: transparent;
