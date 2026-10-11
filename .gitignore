@@ -1,5 +1,5 @@
 
 *.zip
 
-# Local working checklist (audit findings) — not a deliverable
-TODO.md
+# Local development scratch files
+.tmp/

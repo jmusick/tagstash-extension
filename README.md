@@ -15,7 +15,7 @@ A Firefox WebExtension that saves the active tab to your [Tagstash](https://tags
 
 ## Installation
 
-Install from [Firefox Add-ons (AMO)](https://addons.mozilla.org) — search for **Tagstash**.
+Install from [Firefox Add-ons (AMO)](https://addons.mozilla.org/en-US/firefox/addon/tagstash/).
 
 Or load it temporarily for development (see below).
 
@@ -85,3 +85,13 @@ See the [Tagstash Privacy Policy](https://tagsta.sh/privacy) for details on how 
 - Firefox internal pages (`about:*`) cannot be saved from the popup
 - Changing the API base URL in settings clears the current session
 - Your authentication token is stored locally in Firefox and never transmitted except to your configured API endpoint
+
+
+## Source and backlog
+
+The website and API live in [tagstash](https://github.com/jmusick/tagstash).
+Use [extension GitHub Issues](https://github.com/jmusick/tagstash-extension/issues)
+for bugs and roadmap work; the [October 10 migration record](https://github.com/jmusick/tagstash-extension/issues/1)
+preserves earlier audit context. Source conventions live in [AGENTS.md](AGENTS.md).
+The release workflow packages runtime HTML/CSS/JS, manifest, icons, libraries,
+and licensed fonts; working assets and historical reviews stay outside the source.
