@@ -4,8 +4,8 @@
 
 body {
   margin: 0;
-  width: 360px;
-  min-width: 360px;
+  width: 400px;
+  min-width: 400px;
   overflow-x: hidden;
   background: var(--page-gradient);
   color: var(--text);
@@ -14,7 +14,7 @@ body {
 }
 
 .popup-shell {
-  padding: 12px;
+  padding: 10px 12px;
   overflow: visible;
 }
 
@@ -161,7 +161,26 @@ button:disabled {
 
 .sidebar-button {
   width: 100%;
+}
+
+/* Sidebar and Dashboard buttons share one row (Firefox) to save height. */
+.action-row {
+  display: flex;
+  gap: 6px;
   margin-top: 8px;
+}
+
+.action-row .sidebar-button {
+  font-size: 12px;
+}
+
+.action-row > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 /* Open Dashboard with a small copy-address button tucked inside its right end. */
@@ -170,8 +189,8 @@ button:disabled {
 }
 
 .dashboard-action .sidebar-button {
-  padding-right: 40px;
-  padding-left: 40px;
+  padding-right: 38px;
+  padding-left: 8px;
 }
 
 /* Both buttons stay put on hover so the copy button never drifts off its parent. */
@@ -181,8 +200,7 @@ button:disabled {
 
 .copy-url-button {
   position: absolute;
-  /* Inset by the parent's 8px top margin and 1px border. */
-  top: 9px;
+  top: 1px;
   bottom: 1px;
   right: 1px;
   width: 34px;
@@ -432,6 +450,11 @@ button:disabled {
   margin-top: 3px;
   font-size: 14px;
   line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
 }
 
 .tab-url {
@@ -440,6 +463,10 @@ button:disabled {
   line-height: 1.3;
   color: var(--muted);
   word-break: break-all;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .message {
@@ -462,10 +489,14 @@ button:disabled {
 }
 
 .popup-footer {
-  margin-top: 10px;
-  padding-top: 8px;
+  margin-top: 6px;
+  padding-top: 5px;
   border-top: 1px solid var(--panel-border);
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .popup-footer a {
@@ -488,8 +519,6 @@ button:disabled {
 }
 
 .popup-footer .version-label {
-  display: block;
-  margin-top: 2px;
   font-size: 10px;
   color: var(--muted);
   opacity: 0.6;
