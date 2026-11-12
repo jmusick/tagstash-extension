@@ -1,0 +1,23 @@
+# Dependabot version updates, from the jmusick/ci template. Security updates are a separate repository
+# setting and are not controlled by this file.
+#
+# Cadence: one monthly batch per ecosystem keeps review to a single sitting. The cooldown holds each new
+# release back for a week (two for majors) so a yanked or compromised release is usually caught before it
+# reaches a PR. Cooldown does not delay security updates, and jmusick/ci releases skip it.
+version: 2
+updates:
+  # Keeps SHA-pinned actions current, including the jmusick/ci shared workflows.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+      time: "06:00"
+    open-pull-requests-limit: 3
+    labels: [dependencies]
+    cooldown:
+      default-days: 7
+      exclude:
+        - "jmusick/*"
+    groups:
+      actions:
+        patterns: ["*"]
