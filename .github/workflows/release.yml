@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Get version from tag
         id: version
@@ -25,7 +25,7 @@ jobs:
             manifest.json *.html *.css *.js fonts icons lib
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: "v${{ steps.version.outputs.VERSION }}"
           files: "tagstash-extension-${{ steps.version.outputs.VERSION }}.zip"
