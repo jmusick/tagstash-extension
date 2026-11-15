@@ -60,8 +60,11 @@ Tokens can be revoked server-side before they expire: changing or resetting the 
 
 ## Release process
 
-`manifest.json`'s `version` field is the source of truth for the extension version. Pushing a `v*` git tag triggers `.github/workflows/release.yml`, which packages only runtime files (`manifest.json`, root HTML/CSS/JS, `fonts`, `icons`, and `lib`) and publishes it as a GitHub Release — it does **not** read or validate `manifest.json`'s version against the tag, so bump `manifest.json` and tag in the same change to avoid a mismatch between the release name and the shipped manifest.
+`manifest.json`'s `version` field is the source of truth for the extension version. Pushing a `v*` git tag triggers `.github/workflows/release.yml`: its build job zips only runtime files (`manifest.json`, root HTML/CSS/JS, `fonts`, `icons`, and `lib`) into `tagstash-extension-<version>.zip`, and the shared [jmusick/ci](https://github.com/jmusick/ci) `release.yml` publishes it as a GitHub Release with generated notes. Neither reads or validates `manifest.json`'s version against the tag, so bump `manifest.json` and tag in the same change to avoid a mismatch between the release name and the shipped manifest.
 
+## CI
+
+`.github/workflows/ci.yml` runs on pull requests and pushes to `main`. It calls the shared jmusick/ci `baseline.yml` (a Gitleaks scan of the full history, plus dependency review on PRs; its npm checks skip because there's no `package.json`) and ends in a **CI gate** job, which is the one check to require in branch protection. Shared workflows and actions are pinned by commit SHA with the release tag as a comment; Dependabot (`.github/dependabot.yml`, monthly, `github-actions`) proposes updates to those pins.
 
 ## Repository scope and work tracking
 

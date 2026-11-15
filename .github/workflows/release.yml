@@ -1,32 +1,44 @@
+# Publishes a GitHub Release with the packaged extension whenever a vX.Y.Z tag is pushed. The build
+# job zips only the runtime files; the shared jmusick/ci release workflow creates the release and
+# attaches the zip. It does not read manifest.json, so bump its version in the tagged commit.
 name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    tags: ['v*']
+
+permissions:
+  contents: read
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Get version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Build extension zip
         run: |
-          zip -r "tagstash-extension-${{ steps.version.outputs.VERSION }}.zip" \
-            manifest.json *.html *.css *.js fonts icons lib
+          mkdir -p dist
+          zip -r "dist/tagstash-extension-${GITHUB_REF_NAME#v}.zip" manifest.json *.html *.css *.js fonts icons lib
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload release files
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: "v${{ steps.version.outputs.VERSION }}"
-          files: "tagstash-extension-${{ steps.version.outputs.VERSION }}.zip"
-          generate_release_notes: true
+          name: release-files
+          path: dist/
+          if-no-files-found: error
+          retention-days: 1
+
+  release:
+    name: Release
+    needs: build
+    permissions:
+      contents: write
+    uses: jmusick/ci/.github/workflows/release.yml@a8ac9c292577382c63e5a38af58d38a4cd6f8504 # v0.3.0
+    with:
+      artifact-name: release-files

@@ -87,6 +87,10 @@ See the [Tagstash Privacy Policy](https://tagsta.sh/privacy) for details on how 
 - Your authentication token is stored locally in Firefox and never transmitted except to your configured API endpoint
 
 
+## CI and releases
+
+Pull requests and pushes to `main` run the shared [jmusick/ci](https://github.com/jmusick/ci) baseline (a secret scan) behind a single **CI gate** check. Pushing a `vX.Y.Z` tag packages the runtime files into `tagstash-extension-X.Y.Z.zip` and publishes a GitHub Release.
+
 ## Source and backlog
 
 The website and API live in [tagstash](https://github.com/jmusick/tagstash).
