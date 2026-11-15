@@ -1,0 +1,41 @@
+# Shared jmusick/ci baseline. The extension has no package.json, so the baseline runs the Gitleaks
+# secret scan (plus dependency review on pull requests) and skips its npm checks.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  baseline:
+    name: Baseline
+    uses: jmusick/ci/.github/workflows/baseline.yml@a8ac9c292577382c63e5a38af58d38a4cd6f8504 # v0.3.0
+
+  # The one check to require in branch protection. It passes only when every job above passed, so
+  # adding a job never means updating the protection rule.
+  gate:
+    name: CI gate
+    if: always()
+    needs: [baseline]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require every job to have passed
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Job results: $RESULTS"
+          for result in $RESULTS; do
+            if [ "$result" != "success" ]; then
+              echo "::error::A required job did not succeed."
+              exit 1
+            fi
+          done
