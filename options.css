@@ -156,3 +156,17 @@ h2 {
   font-size: 0.88rem;
   color: var(--accent-strong);
 }
+
+.settings-form .hint {
+  margin: 0;
+}
+
+/* The live region stays in the DOM so screen readers keep watching it; it
+   only collapses while empty. */
+.status-message:empty {
+  margin: 0;
+}
+
+.status-message.is-error {
+  color: var(--error-text);
+}

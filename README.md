@@ -54,7 +54,7 @@ Or load it temporarily for development (see below).
 
 ## Configuration
 
-By default the extension points to `https://tagsta.sh/api`. The API base URL can be changed in **Settings** (gear icon) if needed, e.g. for local development.
+By default the extension points to `https://tagsta.sh/api`. The API base URL can be changed in **Settings** (gear icon) if needed, e.g. for local development. The URL must use `https://`; plain `http://` is accepted only for loopback hosts (`localhost`, `127.0.0.1`, `[::1]`, `*.localhost`), and URLs with an embedded user name or password are rejected. A rejected URL leaves the saved endpoint and your session unchanged.
 
 ## Folder layout
 

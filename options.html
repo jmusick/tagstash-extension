@@ -18,12 +18,13 @@
         <form id="settingsForm" class="settings-form">
           <label>
             <span>API base URL</span>
-            <input id="apiBaseUrl" name="apiBaseUrl" type="url" required />
+            <input id="apiBaseUrl" name="apiBaseUrl" type="url" required aria-describedby="apiBaseUrlHint" />
           </label>
+          <p id="apiBaseUrlHint" class="hint">Must start with https:// (http:// is allowed only for localhost). When you save a URL outside tagsta.sh, your browser asks to let the extension access that site, which it needs to send your bookmarks to that server. Saving signs you out so you can sign in to the new instance.</p>
           <button id="saveSettingsButton" type="submit">Save settings</button>
         </form>
 
-        <p id="statusMessage" class="status-message" hidden></p>
+        <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
       </section>
 
       <section class="settings-card">
