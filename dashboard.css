@@ -177,7 +177,7 @@ button {
   margin: 0 0 12px;
   color: var(--text);
   font-size: 0.95rem;
-  font-weight: 750;
+  font-weight: 700;
 }
 
 .section-toggle {
@@ -223,7 +223,6 @@ button {
   background: var(--surface-soft-strong);
   border-radius: 999px;
   padding: 1px 7px;
-  font-stretch: 100%;
   font-variant-numeric: tabular-nums;
 }
 
